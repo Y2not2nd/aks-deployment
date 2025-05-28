@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-web
+  labels:
+    app: static-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: static-web
+  template:
+    metadata:
+      labels:
+        app: static-web
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+      serviceAccountName: default
+      securityContext:
+        fsGroup: 2000
+      containers:
+        - name: static-web
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 3000
+            runAsNonRoot: true
+          image: "acrkubey2inc.azurecr.io/static-web:v1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+      volumes:
+        - name: nginx-cache
+          emptyDir: {} 

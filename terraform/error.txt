@@ -1,0 +1,40 @@
+erraform plan -var="resource_group=aks-rg" -var="location=uksouth" -var="cluster_name=myaks" -var="dns_prefix=myaksdns" -var="node_count=2"
+╷
+│ Error: Unsupported argument
+│
+│   on main.tf line 6, in module "aks":
+│    6:   resource_group = var.resource_group
+│
+│ An argument named "resource_group" is not expected here.
+╵
+╷
+│ Error: Unsupported argument
+│
+│   on main.tf line 7, in module "aks":
+│    7:   location       = var.location
+│
+│ An argument named "location" is not expected here.
+╵
+╷
+│ Error: Unsupported argument
+│
+│   on main.tf line 8, in module "aks":
+│    8:   cluster_name   = var.cluster_name
+│
+│ An argument named "cluster_name" is not expected here.
+╵
+╷
+│ Error: Unsupported argument
+│
+│   on main.tf line 9, in module "aks":
+│    9:   dns_prefix     = var.dns_prefix
+│
+│ An argument named "dns_prefix" is not expected here.
+╵
+╷
+│ Error: Unsupported argument
+│
+│   on main.tf line 10, in module "aks":
+│   10:   node_count     = var.node_count
+│
+│ An argument named "node_count" is not expected here.

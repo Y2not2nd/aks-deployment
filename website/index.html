@@ -1,0 +1,228 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yassin Yassin</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/images/icons/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  </head>
+  <body>
+    <div id="background">
+      <div id="bg-overlay"></div>
+    </div>
+    <header>
+      <a href="index.html" id="logo"> Yassin Yassin </a>
+      <img src="images/icons/list.svg" id="mobile-menu" alt="list" />
+      <nav id="menu">
+        <img class="menu-item" src="images/icons/x-lg.svg" id="close-menu" alt="" />
+        <a class="menu-item active-page" href="#index">Home</a>
+        <a class="menu-item" href="#aboutme">About Me</a>
+        <a class="menu-item" href="#skills">Skills</a>
+        <a class="menu-item" href="#projects">Projects</a>
+        <a class="menu-item" href="#contact">Contact</a>
+      </nav>
+    </header>
+    <div class="page">
+      <div class="hero" id="index">
+        <div class="hero-overlay">
+          <div class="hero-content">
+            <h1 class="animate__animated animate__fadeInLeft">
+              Yassin <span class="highlight">Yassin</span> <br />
+              <span class="dev">Cloud <span class="highlight">Engineer</span></span>
+            </h1>
+            <a href="#projects" class="btn animate__animated animate__fadeInLeft animate__delay-1s">View My Projects</a>
+            <div class="socials animate__animated animate__fadeInLeft animate__delay-2s">
+              <a href="https://www.linkedin.com/in/yassin-yassin-7246261a8/" rel="noopener" target="_blank" title="LinkedIn">
+                <img src="images/icons/linkedin.svg" alt="LinkedIn" />
+              </a>
+              <a href="https://github.com/Y2not2nd" rel="noopener" target="_blank" title="GitHub">
+                <img src="images/icons/github.svg" title="GitHub" />
+              </a>
+            </div>
+          </div>
+          <img src="images/creative.png" alt="" />
+        </div>
+      </div>
+      <hr />
+      <div class="container m0" id="aboutme">
+        <div class="page-title centered">
+          <h2 class="centered">About Me</h2>
+        </div>
+
+        <div class="aboutme" style="display: flex; align-items: flex-start; gap: 2rem;">
+          <div style="flex-shrink: 0;">
+            <img src="images/man.png" alt="man" />
+          </div>
+
+          <div style="flex: 1;">
+            <p>
+              I'm a Certified Azure Solutions Architect Expert who genuinely enjoys solving complex challenges in cloud and endpoint management. I've successfully delivered Azure and Intune projects, honing my skills in troubleshooting, automation, and process optimization. What really excites me is continuous learning; I've recently tackled personal Azure data projects to broaden my expertise in cloud infrastructure, data transformation, and solution architecture.
+            </p>
+
+            <p>
+              Moving forward, I'm eager to specialize in Kubernetes, CI/CD, and Terraform to build the next generation of resilient and automated cloud solutions.
+            </p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="container" id="skills">
+        <div class="page-title"><h2 class="centered">Skills</h2></div>
+        <div class="skills-grid">
+          <div class="skill">
+            <img src="images/icons/icons8-azure-48.png" alt="Azure" />
+            <h2 style="font-size: 1.1em;">Azure</h2>
+            <p></p>
+          </div>
+
+          <div class="skill">
+            <img src="images/icons/linux.png" alt="Linux" />
+            <h2 style="font-size: 1.1em;">Linux</h2>
+            <p></p>
+          </div>
+
+          <div class="skill">
+            <img src="images/icons/jenkins.png" alt="CI/CD" />
+            <h2 style="font-size: 1.1em;">CI/CD</h2>
+            <p></p>
+          </div>
+
+          <div class="skill">
+            <img src="images/icons/HashiCorpTerraform.png" alt="Terraform" />
+            <h2 style="font-size: 1.1em;">Terraform</h2>
+            <p></p>
+          </div>
+
+          <div class="skill">
+            <img src="images/icons/kubernetes.png" alt="Kubernetes" />
+            <h2 style="font-size: 1.1em;">Kubernetes</h2>
+            <p></p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="container" id="projects">
+        <div class="page-title"><h2 class="centered">Projects</h2></div>
+        <div class="projects-grid">
+          <a href="https://github.com/Y2not2nd/my-node-app" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+            <div class="project">
+              <img src="images/icons/jenkins.png" alt="Jenkins CI/CD" />
+              <div class="project-languages">
+                CI/CD Automation with Jenkins<br />
+                Azure Cloud Deployment
+              </div>
+            </div>
+          </a>
+
+          <a href="https://github.com/Y2not2nd/SQL-Data-Migration" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+            <div class="project">
+              <img src="images/icons/Azure SQL Database.png" alt="Azure SQL Database" />
+              <div class="project-languages">
+                SQL Migration<br />
+                Azure Data Factory<br />
+                Power BI
+              </div>
+            </div>
+          </a>
+
+          <div class="project">
+            <img src="images/icons/kub.png" alt="Kubernetes" />
+            <div class="project-languages">
+              Kubernetes Deployment<br />
+              Jenkins<br />
+              Azure
+            </div>
+          </div>
+
+          <div class="project">
+            <img src="images/icons/intune1.png" alt="Microsoft Intune" />
+            <div class="project-languages">
+              Intune Apple MDM<br />
+              Apple Business Manager<br />
+              Automated Device Enrollment
+            </div>
+          </div>
+
+          <a href="https://github.com/Y2not2nd/Google-Cloud-Hosted-Website" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+            <div class="project">
+              <img src="images/icons/hosting.png" alt="Web Hosting" />
+              <div class="project-languages">
+                Web Hosting<br />
+                Azure<br />
+                Domain Management
+              </div>
+            </div>
+          </a>
+
+          <div class="project">
+            <img src="images/icons/HashiCorpTerraform.png" alt="Terraform" />
+            <div class="project-languages">
+              VM Deployment<br />
+              Terraform<br />
+              IaC
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="container" id="contact">
+        <div class="page-title">
+          <h2 class="centered">Contact</h2>
+        </div>
+        <form action="https://formsubmit.co/yassin_123@hotmail.co.uk" method="POST">
+          <input type="text" name="Name" placeholder="Name" required />
+          <input type="email" name="Email" placeholder="E-mail" required />
+          <textarea name="Message" placeholder="Message" cols="30" rows="10" required></textarea>
+          <input class="btn" type="submit" value="Send" />
+        </form>
+      </div>
+    </div>
+    <footer>
+      <h3>Contact Me</h3>
+      <div>
+        <p>yassin_123@hotmail.co.uk</p>
+        <p>07538271428</p>
+      </div>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/yassin-yassin-7246261a8/" rel="noopener" target="_blank" title="LinkedIn">
+          <img src="images/icons/linkedin.svg" alt="LinkedIn" />
+        </a>
+        <a href="https://github.com/Y2not2nd" rel="noopener" target="_blank" title="GitHub">
+          <img src="images/icons/github.svg" title="GitHub" />
+        </a>
+      </div>
+      <a href="https://www.flaticon.com/free-stickers/people" title="people stickers">People stickers created by Stickers - Flaticon</a>
+    </footer>
+    <button id="backToTop">↑</button>
+    <script src="js/menu.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+    <script>
+      const btn = document.getElementById('backToTop');
+      window.onscroll = () => btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+      btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    </script>
+    <script>
+      const text = document.querySelector('.typewriter');
+      const originalText = text.innerHTML;
+      let i = 0;
+      text.innerHTML = '';
+      const type = () => {
+        if (i < originalText.length) {
+          text.innerHTML += originalText.charAt(i);
+          i++;
+          setTimeout(type, 50);
+        }
+      };
+      setTimeout(type, 500);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: static-web
+description: A Helm chart for a simple static website
+type: application
+version: 0.1.0
+appVersion: "1.0"

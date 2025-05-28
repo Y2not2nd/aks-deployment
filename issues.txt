@@ -1,0 +1,266 @@
+# Kubernetes Static Web Application Deployment Issues and Fixes
+
+## 1. Dockerfile Configuration (website/Dockerfile)
+```dockerfile
+# Use an official Nginx image as a base
+FROM nginx:alpine
+
+# Change the default Nginx listen port to 8080
+RUN sed -i 's/listen       80;/listen       8080;/' /etc/nginx/conf.d/default.conf
+
+# Copy the static website files into the Nginx default web directory
+COPY . /usr/share/nginx/html
+
+# Expose port 8080 (updated)
+EXPOSE 8080
+
+# Start Nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
+```
+Key points:
+- Using nginx:alpine for a smaller footprint
+- Changed port from 80 to 8080 for non-root execution
+- Configured to run in foreground mode
+
+## 2. Nginx Configuration (static-web/templates/configmap.yaml)
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen       8080;        # Changed from 80 to 8080
+        server_name  localhost;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }
+```
+Key points:
+- Created dedicated Nginx configuration
+- Set to listen on port 8080
+- Configured root directory and index files
+- Added error page handling
+
+## 3. Deployment Configuration Changes (static-web/templates/deployment.yaml)
+Before:
+```yaml
+securityContext:
+  fsGroup: 2000
+containers:
+  - name: static-web
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 3000
+    image: "acrkubey2inc.azurecr.io/static-web:v1"
+```
+
+After:
+```yaml
+securityContext:
+  fsGroup: 101      # Changed to nginx user group
+containers:
+  - name: static-web
+    securityContext:
+      runAsUser: 101          # Changed to nginx user
+      runAsGroup: 101         # Changed to nginx group
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    volumeMounts:
+      - name: nginx-cache
+        mountPath: /var/cache/nginx
+      - name: nginx-pid
+        mountPath: /var/run
+      - name: nginx-config
+        mountPath: /etc/nginx/conf.d
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 10    # Added delay
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 5     # Added delay
+```
+Key changes:
+- Updated security context to use nginx user (101)
+- Added proper volume mounts for cache, pid, and config
+- Added probe delays
+- Made image tag configurable
+
+## 4. Service Configuration Changes (static-web/templates/service.yaml)
+Before:
+```yaml
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 30185         # Conflicting port
+      targetPort: 8080
+```
+
+After:
+```yaml
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}    # Now using standard port 80
+      targetPort: 8080
+```
+Key changes:
+- Made service type configurable
+- Changed port from 30185 to 80
+- Made port configurable through values
+
+## 5. Values Configuration Changes (static-web/values.yaml)
+Before:
+```yaml
+service:
+  type: LoadBalancer
+  port: 30185
+
+resources: {}
+```
+
+After:
+```yaml
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+image:
+  repository: acrkubey2inc.azurecr.io/static-web
+  pullPolicy: IfNotPresent
+  tag: "v2"
+```
+Key changes:
+- Changed service port to standard HTTP port 80
+- Added resource limits and requests
+- Added image configuration
+
+## 6. Volume Management
+Added three critical volume mounts:
+```yaml
+volumes:
+  - name: nginx-cache    # For caching
+    emptyDir: {}
+  - name: nginx-pid      # For process ID
+    emptyDir: {}
+  - name: nginx-config   # For configuration
+    configMap:
+      name: nginx-config
+```
+
+## 7. Health Checks Configuration
+Enhanced probe configuration:
+```yaml
+livenessProbe:
+  httpGet:
+    path: /
+    port: 8080
+  initialDelaySeconds: 10    # Gives container time to start
+readinessProbe:
+  httpGet:
+    path: /
+    port: 8080
+  initialDelaySeconds: 5     # Shorter delay for readiness
+```
+
+## 8. Vault Policy Creation Issue
+Problem:
+```bash
+# Failed command
+kubectl exec -it vault-0 -- vault policy write static-web-policy C:/projects/aks-k8s-project/vault-policies/static-web-policy.hcl
+Error opening policy file: open C:/projects/aks-k8s-project/vault-policies/static-web-policy.hcl: no such file or directory
+```
+
+Root Cause:
+- Attempting to access a Windows path (`C:/projects/...`) from inside a Linux-based Vault container
+- Container cannot directly access host filesystem paths
+- Path format incompatibility between Windows and Linux
+
+Solution:
+Created a shell script (create-policy.sh) to properly handle policy creation:
+```bash
+#!/bin/bash
+kubectl exec -i vault-0 -- sh -c 'cat > /tmp/policy.hcl << EOF
+path "kv/data/static-web-secrets" {
+  capabilities = ["read"]
+}
+EOF
+vault policy write static-web-policy /tmp/policy.hcl'
+```
+
+Key points:
+- Creates policy file directly inside the container
+- Uses heredoc to inject policy content
+- Avoids Windows/Linux path issues
+- Executes policy creation in the container's context
+
+How to apply:
+```bash
+chmod +x create-policy.sh
+./create-policy.sh
+```
+
+Result:
+```
+Success! Uploaded policy: static-web-policy
+```
+
+Best Practices Learned:
+- When working with containers, create files inside the container rather than trying to access host paths
+- Use heredocs or ConfigMaps for injecting configuration into containers
+- Consider platform differences (Windows vs Linux) when writing paths
+- Use shell scripts to automate multi-step container operations
+
+## Debugging Process
+The debugging process involved:
+1. First identifying permission issues through pod logs
+2. Then fixing Nginx configuration issues
+3. Addressing volume mount permissions
+4. Finally resolving the port conflict
+
+Common debugging commands:
+```bash
+# Check pod status
+kubectl get pods -l app=static-web
+
+# Check pod logs
+kubectl logs <pod-name>
+
+# Check service status
+kubectl get svc static-web
+
+# Apply changes
+helm upgrade --install static-web ./static-web
+```
+
+## Final Configuration Ensures:
+- Secure running as non-root
+- Proper file permissions
+- Configurable deployment
+- Standard HTTP port access
+- Reliable health checking
+- Efficient resource usage 

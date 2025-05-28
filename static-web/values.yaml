@@ -1,0 +1,39 @@
+replicaCount: 2
+
+image:
+  repository: acrkubey2inc.azurecr.io/static-web
+  pullPolicy: IfNotPresent
+  tag: "v2"
+
+service:
+  type: LoadBalancer
+  port: 80
+
+serviceAccount:
+  create: true
+  name: ""
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
